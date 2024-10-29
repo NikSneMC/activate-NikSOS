@@ -1,0 +1,10 @@
+[package]
+name = "activate-linux"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+smithay-client-toolkit = "0.19.2"
+wayland-client = "0.31.7"
+env_logger = "0.11.5"
+fontdue = "0.9.2"
