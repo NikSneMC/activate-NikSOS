@@ -198,7 +198,7 @@ impl SimpleLayer {
 
         rasterize_string(
             &self.font,
-            "Activate Linux",
+            "Activate NikSOS",
             28.0,
             0,
             canvas,
@@ -207,7 +207,7 @@ impl SimpleLayer {
 
         rasterize_string(
             &self.font,
-            "Go to Settings to activate Linux.",
+            "Go to Settings to activate NikSOS.",
             16.0,
             32,
             canvas,
