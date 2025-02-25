@@ -8,9 +8,10 @@ rustPlatform.buildRustPackage {
   pname = "activate-niksos";
   version = "0.1.0";
   src = ./.;
-  cargoHash = "sha256-TuP7p/SuyCEqDTBiYcbdTvH4InRoo/R2RSmmSz7m5zM=";
+  cargoHash = "sha256-geUy5xjmM9kOrl+Z10rV15GsAlWruMdbLjAujRTFQGY=";
   buildInputs = [libxkbcommon];
   nativeBuildInputs = [pkg-config];
+  useFetchCargoVendor = true;
 
   meta = with lib; {
     description = ''Windows' "Active Windows" watermark for NikSOS'';
