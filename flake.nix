@@ -1,46 +1,48 @@
 {
   inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+
     fenix = {
       url = "github:nix-community/fenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    naersk = {
+      url = "github:nix-community/naersk";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        fenix.follows = "fenix";
+      };
+    };
   };
 
   outputs = {
-    fenix,
     nixpkgs,
+    fenix,
+    naersk,
     ...
   }: let
     system = "x86_64-linux";
+
     pkgs = import nixpkgs {
       inherit system;
       overlays = [fenix.overlays.default];
     };
-    dependencies = with pkgs; [libxkbcommon];
 
-    devDependencies = with pkgs; [pkg-config];
+    naersk' = pkgs.callPackage naersk {};
   in {
-    packages.${system}.default = pkgs.callPackage ./. {};
-    devShells.${system}.default = pkgs.mkShell {
-      LD_LIBRARY_PATH = pkgs.lib.strings.makeLibraryPath dependencies;
-      packages = with pkgs;
-        [
-          (fenix.packages.${system}.complete.withComponents [
-            "cargo"
-            "clippy"
-            "rust-src"
-            "rustc"
-            "rustfmt"
-          ])
-          alejandra
-          bacon
-          lldb
-          rust-analyzer-nightly
-          vscode-extensions.vadimcn.vscode-lldb.adapter
-        ]
-        ++ dependencies
-        ++ devDependencies;
+    devShells.${system}.default = import ./shell.nix {inherit pkgs;};
+
+    packages.${system} = rec {
+      default = activate-niksos;
+
+      activate-niksos = naersk'.buildPackage {
+        src = ./.;
+
+        buildInputs = with pkgs; [libxkbcommon];
+        nativeBuildInputs = with pkgs; [pkg-config];
+
+        meta.mainProgram = "activate-niksos";
+      };
     };
   };
 }
